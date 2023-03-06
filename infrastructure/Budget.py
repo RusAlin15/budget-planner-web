@@ -83,19 +83,26 @@ class Budget:
 
     @property
     def incomes(self):
-        return self.__incomes_dict
+        return self.get_recording(self.__incomes_dict)
+
+    @staticmethod
+    def get_recording(dictionary):
+        recoring_dict = {}
+        for key, value in dictionary.items():
+            recoring_dict[key] = value.recording
+        return recoring_dict
 
     @property
     def expenses(self):
-        return self.__expenses_dict
+        return self.get_recording(self.__expenses_dict)
 
     @property
     def savings(self):
-        return self.__savings_dict
+        return self.get_recording(self.__savings_dict)
 
     @property
     def wish_expenses(self):
-        return self.__wishes_expense_dict
+        return self.get_recording(self.__wishes_expense_dict)
 
     def show_budget(self):
         text = []
@@ -138,57 +145,89 @@ class Budget:
         return self.__wishes_expense_dict[self.__wish_expenses_id]
 
     def edit_income(self, id, record):
+        old_value = self.__incomes_dict[id].value
         self.__incomes_dict[id] = record
-        self.__calulate_total_incomes()
+        self.__total_income += record.value - old_value
 
     def edit_saving(self, id, record):
+        old_value = self.__savings_dict[id].value
         self.__savings_dict[id] = record
-        self.__calculate_total_savings()
+        self.__total_savings += record.value - old_value
 
     def edit_wish_expense(self, id, record):
+        old_value = self.__wishes_expense_dict[id].value
         self.__wishes_expense_dict[id] = record
-        self.__calulate_total_wish_expenses()
+        self.__total_wish_expenses += record.value - old_value
 
     def edit_expense(self, id, record):
+        old_value = self.__expenses_dict[id].value
         self.__expenses_dict[id] = record
-        self.__calulate_total_expenses()
-
-    def __calulate_total_wish_expenses(self):
-        sum = 0
-        for value in self.wish_expenses.values():
-            sum += value.value
-        self.__total_wish_expenses = sum
-
-    def __calculate_total_savings(self):
-        sum = 0
-        for value in self.savings.values():
-            sum += value.value
-        self.__total_savings = sum
-
-    def __calulate_total_expenses(self):
-        sum = 0
-        for value in self.expenses.values():
-            sum += value.value
-        self.__total_expenses = sum
-
-    def __calulate_total_incomes(self):
-        sum = 0
-        for value in self.incomes.values():
-            sum += value.value
-        self.__total_income = sum
+        self.__total_expenses += record.value - old_value
 
     def delete_saving(self, id):
+        value = self.__incomes_dict[id].value
         del self.__savings_dict[id]
-        self.__calculate_total_savings()
+        self.__total_savings -= value
 
     def delete_expense(self, id):
+        value = self.__expenses_dict[id].value
         del self.__expenses_dict[id]
-        self.__calulate_total_expenses()
+        self.__total_expenses -= value
 
     def delete_wish(self, id):
+        value = self.__wishes_expense_dict[id].value
         del self.__wishes_expense_dict[id]
-        self.__calulate_total_wish_expenses()
+        self.__total_wish_expenses -= value
 
     def delete_income(self, id):
+        value = self.__incomes_dict[id].value
         del self.__incomes_dict[id]
-        self.__calulate_total_incomes()
+        self.__total_income -= value
+
+    @property
+    def max_income_id(self):
+        return self.__income_id
+
+    @property
+    def min_income_id(self):
+        min = self.__income_id
+        for key in self.__incomes_dict.keys():
+            if key < min:
+                min = key
+        return min
+
+    @property
+    def max_expense_id(self):
+        return self.__expense_id
+
+    @property
+    def min_expense_id(self):
+        min = self.__expense_id
+        for key in self.__expenses_dict.keys():
+            if key < min:
+                min = key
+        return min
+
+    @property
+    def max_wishes_id(self):
+        return self.__wish_expenses_id
+
+    @property
+    def min_wishes_id(self):
+        min = self.__wish_expenses_id
+        for key in self.__wishes_expense_dict.keys():
+            if key < min:
+                min = key
+        return min
+
+    @property
+    def max_saving_id(self):
+        return self.__savings_id
+
+    @property
+    def min_saving_id(self):
+        min = self.__savings_id
+        for key in self.__savings_dict.keys():
+            if key < min:
+                min = key
+        return min

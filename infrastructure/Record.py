@@ -21,3 +21,10 @@ class Record:
     @value.setter
     def value(self, new_value):
         self.__value = new_value
+
+    @property
+    def recording(self):
+        return {"Title": self.__title,
+                "Description": self.__description,
+                "Date": self.__date,
+                "Value": self.__value}
