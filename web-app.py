@@ -6,7 +6,8 @@ from infrastructure.Record import Record
 import pickle
 import pandas as pd
 import numpy as np
-from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, ColumnsAutoSizeMode
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode, \
+    ColumnsAutoSizeMode
 
 STORAGE_ADDRESS = r"storage.pkl"
 
@@ -33,7 +34,7 @@ def select_report_month():
     this_year = datetime.date.today().year
     this_month = datetime.date.today().month
     month_abbr = calendar.month_abbr[1:]
-    report_month_str = st.radio('', month_abbr, index=this_month - 1, horizontal=True)
+    report_month_str = st.selectbox('', month_abbr, index=this_month - 1)
     report_year = st.selectbox('', range(this_year, this_year - 4, -1))
     return f'{report_month_str}-{report_year}'
 
@@ -69,7 +70,6 @@ def get_budget_details(item):
 if __name__ == '__main__':
     with st.sidebar:
         st.title("Calendar View")
-        st.write("Select an year & a month:")
 
         date_selector = select_report_month()
         budgets_dict = application_load()
@@ -165,10 +165,12 @@ if __name__ == '__main__':
                     budgets_dict[add_date].add_expense(Record(title, value, date, description))
             elif submitted and genre == "Wish":
                 try:
-                    budgets_dict[add_date].add_wish_expenses(Record(title, value, date, description))
+                    budgets_dict[add_date].add_wish_expenses(
+                        Record(title, value, date, description))
                 except KeyError:
                     budgets_dict[add_date] = Budget(f'{add_date}')
-                    budgets_dict[add_date].add_wish_expenses(Record(title, value, date, description))
+                    budgets_dict[add_date].add_wish_expenses(
+                        Record(title, value, date, description))
             elif genre == "Saving":
                 try:
                     budgets_dict[add_date].add_saving(Record(title, value, date, description))
@@ -338,7 +340,8 @@ if __name__ == '__main__':
                         pass
                 elif show_state == "Wish":
                     try:
-                        current_item.edit_wish_expense(edit_id, Record(title, value, date, description))
+                        current_item.edit_wish_expense(edit_id,
+                                                       Record(title, value, date, description))
                     except KeyError:
                         pass
                 elif show_state == "Saving":
